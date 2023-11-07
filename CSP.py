@@ -1,49 +1,42 @@
-class Graph():
- 
-    def __init__(self, vertices):
-        self.V = vertices
-        self.graph = [[0 for column in range(vertices)]
-                      for row in range(vertices)]
- 
-    # A utility function to check
-    # if the current color assignment
-    # is safe for vertex v
-    def isSafe(self, v, colour, c):
-        for i in range(self.V):
-            if self.graph[v][i] == 1 and colour[i] == c:
-                return False
-        return True
- 
-    # A recursive utility function to solve m
-    # coloring  problem
-    def graphColourUtil(self, m, colour, v):
-        if v == self.V:
-            return True
- 
-        for c in range(1, m + 1):
-            if self.isSafe(v, colour, c) == True:
-                colour[v] = c
-                if self.graphColourUtil(m, colour, v + 1) == True:
-                    return True
-                colour[v] = 0
- 
-    def graphColouring(self, m):
-        colour = [0] * self.V
-        if self.graphColourUtil(m, colour, 0) == None:
+def is_valid(graph, node, color, assignment):
+    for neighbor in graph[node]:
+        if neighbor in assignment and assignment[neighbor] == color:
             return False
- 
-        # Print the solution
-        print("Solution exist and Following are the assigned colours:")
-        for c in colour:
-            print(c, end=' ')
-        return True
- 
- 
-# Driver Code
-if __name__ == '__main__':
-    g = Graph(4)
-    g.graph = [[0, 1, 1, 1], [1, 0, 1, 0], [1, 1, 0, 1], [1, 0, 1, 0]]
-    m = 3
- 
-    # Function call
-    g.graphColouring(m)
+    return True
+
+def backtrack(graph, colors, assignment):
+    if len(assignment) == len(graph):
+        return assignment
+    
+    node = [node for node in graph if node not in assignment][0]
+    
+    for color in colors:
+        if is_valid(graph, node, color, assignment):
+            assignment[node] = color
+            result = backtrack(graph, colors, assignment)
+            if result is not None:
+                return result
+            del assignment[node]
+    
+    return None
+
+def graph_coloring(graph, colors):
+    return backtrack(graph, colors, {})
+
+# Example usage
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'C', 'D'],
+    'C': ['A', 'B', 'D'],
+    'D': ['B', 'C']
+}
+
+colors = ['Red', 'Green', 'Blue']
+
+result = graph_coloring(graph, colors)
+if result is not None:
+    print("Graph coloring successful:")
+    for node, color in result.items():
+        print(f"Node {node} is colored {color}")
+else:
+    print("No solution found.")
