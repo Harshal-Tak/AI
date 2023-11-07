@@ -1,36 +1,30 @@
-no_of_nodes = int(input("Enter number of nodes: "))
-
+no_of_vertices = int(input("Enter no. of vertices: "))
 graph = {}
 
-for i in range(no_of_nodes):
-    node = input("Enter node name: ")
-    graph[node] = []
-    no_of_neighb = int(input("Enter number of neighbours: "))
-    lst = []
-    for j in range(no_of_neighb):
-        neighbour = input("Enter neighbour: ")
-        lst.append(neighbour)
-    graph[node] = lst
+for i in range(0,no_of_vertices):
+    node = input("Enter node: ")
+    neighbours = int(input("No of neighbours: "))
+    adj = []
+    for j in range(0,neighbours):
+        neighbour = input("Neighbour: ")
+        adj.append(neighbour)
+    graph[node] = adj
     
-print(graph)
-
 visited = set()
 
-def bfs(graph,vertex,visited):
-    visited.add(vertex)
-    queue = []
-    queue.append(vertex)
+def bfs(graph,visited,queue):
+    if not queue:
+        return
     
-    while queue:
-        v = queue.pop(0)
-        print(v)
-        
-        for neighbour in graph[v]:
-            if neighbour not in visited:
-                visited.add(neighbour)
-                queue.append(neighbour)
-
-v = input("Enter vertex name: ")
-
-if v in graph:
-    bfs(graph,v,visited)
+    v = queue.pop(0)
+    print(v)
+    
+    for neighbour in graph[v]:
+        if neighbour not in visited:
+            visited.add(neighbour)
+            queue.append(neighbour)
+    bfs(graph,visited,queue)
+                
+queue = ['1']
+visited.add('1')
+bfs(graph,visited,queue)
